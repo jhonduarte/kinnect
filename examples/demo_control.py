@@ -23,4 +23,30 @@ class BlobAnalysis:
                     counter += 1 #Añade al counter para ver cuantos pixeles están allí
                 except:
                     pass
-            cs = cs.h_next()              
+            cs = cs.h_next()
+        self.centroid = centroid
+        self.counter = counter
+        self.cHull = cHull
+        self.contours = contours
+        self.cHullArea = cHullArea
+        self.contourArea = contourArea
+
+d = display.Display() #Pantalla de referencia para la manipulación Xlib
+def move_mouse(x,y):#Mueve el ratón en (x,y). "x" y "y" son enteros
+    s = d.screen()
+    root = s.root
+    root.warp_pointer(x,y)
+    d.sync()
+    
+def click_down(button):#Simula un clic abajo. Button es un entero
+    Xlib.ext.xtest.fake_input(d,X.ButtonPress, button)
+    d.sync()
+    
+def click_up(button): #Simula un clic arriba. Button es un entero
+    Xlib.ext.xtest.fake_input(d,X.ButtonRelease, button)
+    d.sync()
+
+def cacheAppendMean(cache, val):
+    cache.append(val)
+    del cache[0]
+    return np.mean(cache) 
