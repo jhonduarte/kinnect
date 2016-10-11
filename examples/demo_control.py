@@ -1,3 +1,7 @@
+import numpy as np
+import pygame
+
+
 class BlobAnalysis:
       def__init__(self, BW): #Constructor. BW es una imagen binaria en forma de una matriz numpy
         self.BW=BW
