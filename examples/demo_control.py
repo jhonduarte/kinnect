@@ -50,3 +50,42 @@ def cacheAppendMean(cache, val):
     cache.append(val)
     del cache[0]
     return np.mean(cache) 
+                                    
+def hand_tracker():
+    (depth,_) = get_depth()
+    cHullAreaCache = constList(5,12000)
+    areaRatioCache = constList(5,1)
+    centroidList = list() #Iniciar centroid list
+    #Colores basicos RGB
+    BLACK = (0,0,0)
+    RED = (255,0,0)
+    GREEN = (0,255,0)
+    PURPLE = (255,0,255)
+    BLUE = (0,0,255)
+    WHITE = (255,255,255)
+    YELLOW = (255,255,0)
+    pygame.init() #Inicializar pygame
+    xSize,ySize = 640,480 #Ajusta resolución de la pantalla
+    screen = pygame.display.set_mode((xSize,ySize),pygame.RESIZABLE) #Crea la interfaz principal
+    screenFlipped = pygame.display.set_mode((xSize,ySize),pygame.RESIZABLE) 
+    screen.fill(BLACK) #Hacer fondo negro
+    done = False #Repetir boolean --> Le dice al programa cuando finalizar
+    dummy = False
+    while not done:
+        screen.fill(BLACK)
+        (depth,_) = get_depth() #Obtener la profundidad del Kinect 
+        depth = depth.astype(np.float32) #Convertir la profunidad del objeto a 32 bits
+        _,depthThresh = cv2.threshold(depth, 600, 255, cv2.THRESH_BINARY_INV)
+        _,back = cv2.threshold(depth, 900, 255, cv2.THRESH_BINARY_INV)
+        blobData = BlobAnalysis(depthThresh) #Crear blobData object usando BlobAnalysis class
+        blobDataBack = BlobAnalysis(back)
+        
+        for cont in blobDataBack.contours: #Repite los contornos en el fondo
+            pygame.draw.lines(screen,YELLOW,True,cont,3)
+        for i in range(blobData.counter): #Repite 
+            pygame.draw.circle(screen,BLUE,blobData.centroid[i],10)
+            centroidList.append(blobData.centroid[i])
+            pygame.draw.lines(screen,RED,True,blobData.cHull[i],3)
+            pygame.draw.lines(screen,GREEN,True,blobData.contours[i],3)
+            for tips in blobData.cHull[i]:
+                pygame.draw.circle(screen,PURPLE,tips,5)
