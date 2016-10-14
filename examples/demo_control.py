@@ -1,6 +1,9 @@
 import numpy as np
 import pygame
-
+from Xlib import X, display
+import Xlib.XK
+import Xlib.error
+import Xlib.ext.xtest
 
 class BlobAnalysis:
       def__init__(self, BW): #Constructor. BW es una imagen binaria en forma de una matriz numpy
@@ -93,3 +96,45 @@ def hand_tracker():
             pygame.draw.lines(screen,GREEN,True,blobData.contours[i],3)
             for tips in blobData.cHull[i]:
                 pygame.draw.circle(screen,PURPLE,tips,5)
+                                    
+ pygame.display.set_caption('Kinect Tracking') 
+        del depth
+        screenFlipped = pygame.transform.flip(screen,1,0)
+        screen.blit(screenFlipped,(0,0)) 
+        pygame.display.flip() 
+                                    
+        try:
+            centroidX = blobData.centroid[0][0]
+            centroidY = blobData.centroid[0][1]
+            if dummy:
+                mousePtr = display.Display().screen().root.query_pointer()._data #Gets current mouse attributes
+                dX = centroidX - strX 
+                dY = strY - centroidY 
+                if abs(dX) > 1: 
+                    mouseX = mousePtr["root_x"] - 2*dX 
+                if abs(dY) > 1:
+                    mouseY = mousePtr["root_y"] - 2*dY 
+                move_mouse(mouseX,mouseY)
+                strX = centroidX 
+                strY = centroidY 
+                cArea = cacheAppendMean(cHullAreaCache,blobData.cHullArea[0]) 
+                areaRatio = cacheAppendMean(areaRatioCache, blobData.contourArea[0]/cArea)
+                if cArea < 10000 and areaRatio > 0.82:
+                    click_down(1)
+                else:
+                    click_up(1)
+            else:
+                strX = centroidX 
+                strY = centroidY 
+                dummy = True 
+        except:
+            dummy = False
+            
+        for e in pygame.event.get():
+            if e.type is pygame.QUIT:
+                done = True
+
+try: 
+    hand_tracker()
+except: 
+    pass
