@@ -1,3 +1,7 @@
+Actualizar/Instalar Xcode a la última versión
+Una vez hecho pasa a Xcode / Open Developer Tool / More Developer Tools… e instala Command Line Tools
+Instalar CMake
+
 Instalación de dependencias:
 
 En primer lugar, tendremos que downlaod algunas bibliotecas con el fin de conseguir el puerto USB de tu Mac a trabajar con el Kinect junto con el conductor SensorKinect.
