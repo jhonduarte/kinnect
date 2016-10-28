@@ -1,3 +1,4 @@
+from freenect import sync_get_depth as get_depth
 import numpy as np
 import pygame
 from Xlib import X, display
